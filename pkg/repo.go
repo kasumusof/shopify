@@ -31,7 +31,7 @@ var (
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	Port = os.Getenv("PORT")
@@ -57,7 +57,7 @@ func init() {
 	if dbhost == "" {
 		dbhost = "localhost"
 	}
-	log.Println("port: ", Port, "dbname: ", dbname, "user: ", user, "password: ", password, "dbhost: ", dbhost)
+	// log.Println("port: ", Port, "dbname: ", dbname, "user: ", user, "password: ", password, "dbhost: ", dbhost)
 	db, err = sqlx.Connect("postgres", "user="+user+" dbname="+dbname+" password="+password+" host="+dbhost+" sslmode=require")
 	if err != nil {
 		panic(err)

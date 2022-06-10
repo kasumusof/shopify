@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/items";
+const url = document.URL+"items";
 
 function renderList() {
     fetch(url).then(
