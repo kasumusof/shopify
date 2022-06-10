@@ -8,8 +8,6 @@ function renderList() {
     ).then(
         function(resp) {
             const time =  new Date().toLocaleTimeString();
-        console.log(resp, time);
-        console.log("rendering list: actually");
         const mappedItems = resp.data.map(item => {
             return `
             <li>
@@ -41,7 +39,6 @@ function createItem() {
     const quantity = document.querySelector("input[name='quantity']").value;
     const name = document.querySelector("input[name='name']").value;
     const description = document.querySelector("input[name='description']").value;
-    console.log(quantity, name, description);
     let intQuantity = parseInt(quantity);
     let payload = {
         name: name,
@@ -75,7 +72,6 @@ function deleteItem(id) {
     const payload = {
         "comment": comment
     }
-    console.log("in here", id)
     fetch(url + "/" + id, {
         method: "DELETE",
         headers: {
@@ -97,9 +93,6 @@ function deleteItem(id) {
 }
 
 function showMenu(id, name, description, quantity) {
-    // const id = obj.id ? obj.id : obj;
-    console.log("in here show menu", id);
-    // document.getElementById(id).style.display = "block";
     document.getElementById(id).hidden = !document.getElementById(id).hidden;
     document.querySelector("input[name='edit_name']").value = name;
     document.querySelector("input[name='edit_description']").value = description;
@@ -108,7 +101,6 @@ function showMenu(id, name, description, quantity) {
 }
 
 function restoreItem(id) {
-    console.log("in here", id)
     fetch(url + "/" + id, {
         method: "PUT",
     }).then(
@@ -126,7 +118,6 @@ function restoreItem(id) {
 }
 
 function showArchive() {
-    console.log("in here show archive");
     fetch(url +"?"+ new URLSearchParams({
         "status": true
     })).then(function(response) {
@@ -157,7 +148,6 @@ function updateItem(id) {
     const quantity = document.querySelector("input[name='edit_quantity']").value;
     const name = document.querySelector("input[name='edit_name']").value;
     const description = document.querySelector("input[name='edit_description']").value;
-    console.log(quantity, name, description);
     let intQuantity = parseInt(quantity);
     let payload = {
         name: name,
@@ -183,11 +173,6 @@ function updateItem(id) {
         console.log(error);
     })
 }
-
-// const variable = document.querySelector(".submit");
-// variable.addEventListener("click", createItem);
-
-// i can hear you
 
 renderList();
 
