@@ -7,10 +7,23 @@
 </head>
 <body>
     <h1>SHOPIFY INVENTORY</h1>
-    <ul id="inventory">
+    <div>
+        <input type="text" name="name" placeholder="name">
+        <input type="text" name="description" placeholder="description">
+        <input type="text" name="quantity" placeholder="quantity">
 
-
-    </ul>
+        <button onclick="createItem()">Create Item</button>
+    </div>
+    <section class="list-inventory">
+        <ul id="inventory"></ul>
+    </section>
+    <section class="list-archive">
+        <button onclick="showArchive()">  Show Archive</button>
+        <ul id="archive"></ul>
+    </section>
+    <div hidden="true">
+        dfdfdf
+    </div>
     <script src="./script.js" type="text/javascript"></script>
 </body>
 </html> 
