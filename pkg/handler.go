@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
@@ -19,6 +20,8 @@ type Respsone struct {
 func Router() *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Use(middleware.Logger)
+	
 	r.Use(cors.Handler(cors.Options{
 		// AllowedOrigins: []string{"http://localhost:8080/*"}, // Use this to allow specific origin hosts
 		AllowedOrigins:   []string{"https://*", "http://*"},
@@ -29,6 +32,7 @@ func Router() *chi.Mux {
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
+
 	r.Post("/items", func(w http.ResponseWriter, r *http.Request) {
 		var item Item
 		if err := render.Bind(r, &item); err != nil {
@@ -48,8 +52,10 @@ func Router() *chi.Mux {
 			Data:    v,
 		}, http.StatusCreated)
 	})
+
 	r.Get("/items", func(w http.ResponseWriter, r *http.Request) {
-		v, err := listItems(r.Context())
+		status := r.URL.Query().Get("status")
+		v, err := listItems(r.Context(), status)
 		if err != nil {
 			log.Println(err)
 			renderResponse(w, map[string]string{"message": "failed to get items"}, http.StatusInternalServerError)
@@ -61,6 +67,7 @@ func Router() *chi.Mux {
 			Data:    v,
 		}, http.StatusOK)
 	})
+
 	r.Get("/items/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		v, err := getItem(r.Context(), id)
@@ -74,9 +81,17 @@ func Router() *chi.Mux {
 			Data:    v,
 		}, http.StatusOK)
 	})
+
 	r.Delete("/items/{id}", func(w http.ResponseWriter, r *http.Request) {
+		var comment DeletedComment
+		if err := render.Bind(r, &comment); err != nil {
+			log.Println(err)
+			renderResponse(w, map[string]string{"message": "failed to bind"}, http.StatusBadRequest)
+			return
+		}
+
 		id := chi.URLParam(r, "id")
-		err := deleteItem(r.Context(), id)
+		err := deleteItem(r.Context(), id, &comment)
 		if err != nil {
 			log.Println(err)
 			renderResponse(w, map[string]string{"message": "failed to delete item"}, http.StatusInternalServerError)
@@ -85,6 +100,40 @@ func Router() *chi.Mux {
 		renderResponse(w, Respsone{
 			Message: "Ok",
 			Data:    id,
+		}, http.StatusOK)
+	})
+
+	r.Patch("/items/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		var item Item
+		if err := render.Bind(r, &item); err != nil {
+			log.Println(err)
+			renderResponse(w, map[string]string{"message": "failed to bind"}, http.StatusBadRequest)
+			return
+		}
+		err := updateItem(r.Context(), id, &item)
+		if err != nil {
+			log.Println(err)
+			renderResponse(w, map[string]string{"message": "failed to update item"}, http.StatusInternalServerError)
+			return
+		}
+		renderResponse(w, Respsone{
+			Message: "Ok",
+			Data:    "Item updated successfully",
+		}, http.StatusOK)
+	})
+	
+	r.Put("/items/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := chi.URLParam(r, "id")
+		err := unArchiveItem(r.Context(), id)
+		if err != nil {
+			log.Println(err)
+			renderResponse(w, map[string]string{"message": "failed to restore item"}, http.StatusInternalServerError)
+			return
+		}
+		renderResponse(w, Respsone{
+			Message: "Ok",
+			Data:    "Item restored successfully",
 		}, http.StatusOK)
 	})
 

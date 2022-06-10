@@ -18,6 +18,7 @@ type Item struct {
 	DeletedAt   *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at" db:"updated_at"`
+	Comment     *string    `json:"comment,omitempty" db:"comment"`
 }
 
 func (i *Item) Bind(r *http.Request) error {
@@ -45,20 +46,8 @@ type DeletedComment struct {
 
 func (d *DeletedComment) Bind(r *http.Request) error {
 	err1 := validate.Validate(
-		&validators.StringIsPresent{Name: "name", Field: d.Comment, Message: fmt.Sprintf("The %s value is required", "name")},
-		&validators.StringIsPresent{Name: "item", Field: d.Item, Message: fmt.Sprintf("The %s value is required", "description")},
-		&validators.StringLengthInRange{Name: "name", Field: d.Comment, Min: 2, Max: 500, Message: fmt.Sprintf("The %s value must be between %d and %d characters", "name", 2, 500)},
-		&validators.FuncValidator{
-			Name: "item",
-			Fn: func() bool {
-				if _, err := uuid.FromString(d.Item); err != nil {
-					return false
-				}
-				return true
-			},
-			Field:   d.Item,
-			Message: fmt.Sprintf("The %s value is required", "item"),
-		},
+		&validators.StringIsPresent{Name: "comment", Field: d.Comment, Message: fmt.Sprintf("The %s value is required", "name")},
+		&validators.StringLengthInRange{Name: "comment", Field: d.Comment, Min: 2, Max: 500, Message: fmt.Sprintf("The %s value must be between %d and %d characters", "name", 2, 500)},
 	)
 
 	if err1.HasAny() {

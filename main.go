@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,15 +10,15 @@ import (
 
 func init() {
 	log.Println("Starting server...")
-	log.Println("Listen on port 8080")
+	log.Println("Listen on port:", pkg.Port)
 	log.Println("Press CTRL+C to stop")
 }
 
 func main() {
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    fmt.Sprintf(":%s", pkg.Port),
 		Handler: pkg.Router(),
 	}
 
-	server.ListenAndServe()
+	log.Fatal(server.ListenAndServe())
 }
