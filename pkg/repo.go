@@ -16,7 +16,6 @@ import (
 
 var (
 	db   *sqlx.DB
-	err  error
 	psql = sqr.StatementBuilder.PlaceholderFormat(sqr.Dollar)
 )
 

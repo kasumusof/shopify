@@ -1,4 +1,4 @@
-const url = document.URL+"items";
+const url = "/items";
 
 function renderList() {
     fetch(url).then(
