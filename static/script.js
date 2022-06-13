@@ -19,9 +19,9 @@ function renderList() {
                     <input type="text" name="comment" placeholder="comment">
                     <button onclick='deleteItem("${item.id}")'> Delete </button>
                     <br>
-                    <input type="text" name="edit_name" placeholder="name">
-                    <input type="text" name="edit_description" placeholder="description">
-                    <input type="text" name="edit_quantity" placeholder="quantity">
+                    <input type="text" name="${item.id}edit_name" placeholder="name">
+                    <input type="text" name="${item.id}edit_description" placeholder="description">
+                    <input type="text" name="${item.id}edit_quantity" placeholder="quantity">
                     <button onclick='updateItem("${item.id}")'> Update </button>
                 </div>
             </li>
@@ -45,7 +45,7 @@ function createItem() {
         description: description,
         quantity: intQuantity
     }
-
+    
     fetch(url, {
         method: "POST",
         headers: {
@@ -94,9 +94,9 @@ function deleteItem(id) {
 
 function showMenu(id, name, description, quantity) {
     document.getElementById(id).hidden = !document.getElementById(id).hidden;
-    document.querySelector("input[name='edit_name']").value = name;
-    document.querySelector("input[name='edit_description']").value = description;
-    document.querySelector("input[name='edit_quantity']").value = quantity;
+    document.querySelector(`input[name='${id}edit_name']`).value = name;
+    document.querySelector(`input[name='${id}edit_description']`).value = description;
+    document.querySelector(`input[name='${id}edit_quantity']`).value = quantity;
     
 }
 
